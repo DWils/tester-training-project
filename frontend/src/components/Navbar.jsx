@@ -17,10 +17,7 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link" to="/products">Produits</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/add-product">Ajouter un Produit</Link>
+              <Link className="nav-link" to="/products">Nos produits</Link>
             </li>
           </ul>
         </div>

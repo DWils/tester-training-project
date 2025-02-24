@@ -8,15 +8,12 @@ const AddProduct = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState([]);  // Tableau des catégories récupérées
-  const [username] = useState('admin');
-  const [password] = useState('password');
 
   // Récupérer les catégories depuis le backend au montage du composant
   useEffect(() => {
     fetch('http://localhost:8080/api/categories', {
       method: 'GET',
       headers: {
-        'Authorization': 'Basic ' + btoa(`${username}:${password}`),
         'Content-Type': 'application/json',
       },
     })
@@ -25,7 +22,7 @@ const AddProduct = () => {
       .catch(error => {
         console.error('Erreur lors de la récupération des catégories:', error);
       });
-  }, [username, password]);
+  }, []);
 
   // Fonction handleSubmit pour envoyer les données à l'API
   const handleSubmit = (e) => {
@@ -45,7 +42,7 @@ const AddProduct = () => {
     fetch('http://localhost:8080/api/products', {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+        // 'Authorization': 'Basic ' + btoa(`${username}:${password}`),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(newProduct),

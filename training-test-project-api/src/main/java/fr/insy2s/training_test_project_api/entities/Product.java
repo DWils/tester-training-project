@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "products")
 public class Product {
