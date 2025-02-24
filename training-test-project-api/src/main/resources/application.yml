@@ -1,15 +1,11 @@
 spring:
   application:
     name: training-test-project-api
-  security:
-    user:
-      name: admin
-      password: password
   datasource:
     url: jdbc:postgresql://localhost:5432/test_DB
     username: postgres
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       show-sql: true

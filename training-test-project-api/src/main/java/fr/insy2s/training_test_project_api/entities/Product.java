@@ -42,6 +42,18 @@ public class Product {
 	@ManyToOne
 	private Category category;
 
+	public Product(String productName, String productDescription, Double productPrice,  Category category, String imageUrl) {
+		this.productName = productName;
+		this.productDescription = productDescription;
+		this.productPrice = productPrice;
+		this.creationDate = new Date();
+		this.category = category;
+		this.productImageUrl = imageUrl;
+	}
+
+	public Product() {
+	}
+
 	public Long getProductId() {
 		return productId;
 	}
