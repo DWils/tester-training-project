@@ -1,30 +1,40 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem("user");
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+    const [user, setUser] = useState(null);
 
-    const login = (token, role) => {
-        const userData = { token, role };
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
+    useEffect(() => {
+        // Check if the user is already logged in
+        axios.get('/api/auth/me', { withCredentials: true })
+            .then(response => {
+                setUser(response.data);
+            })
+            .catch(() => {
+                setUser(null);
+            });
+    }, []);
+
+    const login = (username, password) => {
+        return axios.post('/api/auth/login', { username, password }, { withCredentials: true })
+            .then(response => {
+                setUser(response.data);
+                return response.data;
+            })
+            .catch(error => {
+                console.error("Login failed:", error);
+                throw error;
+            });
     };
 
     const logout = () => {
-        localStorage.removeItem("user");
-        setUser(null);
+        return axios.post('/api/auth/logout', {}, { withCredentials: true })
+            .then(() => {
+                setUser(null);
+            });
     };
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
@@ -33,4 +43,6 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    return useContext(AuthContext);
+};

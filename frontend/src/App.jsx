@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import {AuthProvider} from "./context/AuthContext.jsx";
+import AuthButton from "./components/AuthButton.jsx";
 
 const App = () => {
     return (
@@ -27,7 +28,7 @@ const App = () => {
                                     <Link className="nav-link" to="/register">Inscription</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/login">Connexion</Link>
+                                    <AuthButton />
                                 </li>
                             </ul>
                         </div>
@@ -36,7 +37,7 @@ const App = () => {
                     <Routes>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/products" element={<ProductList/>}/>
-                        <Route path="/add-product" element={<PrivateRoute allowedRoles={["VENDOR", "ADMIN"]}><AddProduct/></PrivateRoute>}/>
+                        <Route path="/add-product" element={<PrivateRoute allowedRoles={["VENDOR", "ADMIN", "CUSTOMER"]}><AddProduct/></PrivateRoute>}/>
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/login" element={<Login/>}/>
                     </Routes>

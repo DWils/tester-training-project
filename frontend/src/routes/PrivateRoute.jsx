@@ -1,10 +1,15 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const PrivateRoute = ({ children, allowedRoles }) => {
+const PrivateRoute = ({ allowedRoles, children }) => {
     const { user } = useAuth();
+    console.log(user);
 
-    if (!user || !allowedRoles.includes(user.role)) {
+    if (!user) {
+        return <Navigate to="/login" />;
+    }
+
+    if (!allowedRoles.includes(user.role)) {
         return <Navigate to="/" />;
     }
 

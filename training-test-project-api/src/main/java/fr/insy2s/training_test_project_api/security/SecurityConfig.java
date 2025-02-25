@@ -6,10 +6,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,50 +19,39 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Désactiver CSRF pour les tests
+                .cors(Customizer.withDefaults()) // 🔥 Active CORS
+                .csrf(AbstractHttpConfigurer::disable) // Désactive CSRF pour API REST (ou active avec cookies sécurisés)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("GET", "/api/products/**").permitAll() // ✅ Tout le monde peut voir les produits
-                        .requestMatchers("GET", "/api/categories/**").permitAll() // ✅ Tout le monde peut voir les catégories
-                        .requestMatchers("POST", "/api/products/**").hasAnyRole("VENDOR", "ADMIN") // ➕ Ajouter produit
-                        .requestMatchers("PUT", "/api/products/**").hasAnyRole("VENDOR", "ADMIN") // ✏️ Modifier produit
-                        .requestMatchers("DELETE", "/api/products/**").hasAnyRole("VENDOR", "ADMIN") // ❌ Supprimer produit
-                        .requestMatchers("/api/users/**").hasRole("ADMIN") // 👤 Admin gère les utilisateurs
-                        .requestMatchers("/api/auth/login").permitAll() // Autoriser CORS pour /api/auth/login
-                        .anyRequest().authenticated() // 🔐 Tout le reste nécessite une authentification
+                        .requestMatchers("GET", "/api/products/**").permitAll()
+                        .requestMatchers("GET", "/api/categories/**").permitAll()
+                        .requestMatchers("POST", "/api/products/**").hasAnyRole("VENDOR", "ADMIN", "CUSTOMER")
+                        .requestMatchers("PUT", "/api/products/**").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers("DELETE", "/api/products/**").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/me").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Basic Auth
+                .sessionManagement(session -> session
+                        .sessionFixation().migrateSession()
+                )
+                .formLogin(Customizer.withDefaults()) // 🔥 Active les sessions HTTP (plus besoin de HTTP Basic)
+                .logout(logout -> logout.logoutUrl("/api/auth/logout"));
 
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password("{noop}userpass") // Noop = pas de hashage (pour test)
-                .roles("USER") // 🔍 Peut voir les produits
-                .build();
-
-        UserDetails vendor = User.withUsername("vendor")
-                .password("{noop}vendorpass")
-                .roles("VENDOR") // ➕ Peut gérer les produits
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("{noop}adminpass")
-                .roles("ADMIN") // 👑 Peut tout faire
-                .build();
-
-        return new InMemoryUserDetailsManager(user, vendor, admin);
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    // Configuration CORS
+    // Configuration CORS pour autoriser les cookies de session
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // Appliquer CORS sur tous les endpoints
-                .allowedOrigins("http://localhost:5173", "http://anotherdomain.com")  // Ajouter les domaines autorisés (pas de "*")
-                .allowCredentials(true)  // Autoriser les cookies
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Ajouter les méthodes autorisées
-                .allowedHeaders("*") ; // Ajouter les en-têtes autorisés
-                //.maxAge(3600);  // Cache les résultats CORS pour 1 heure
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:5173","http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
+                .allowedHeaders("*");
     }
 }

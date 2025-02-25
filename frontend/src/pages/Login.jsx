@@ -15,14 +15,15 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // 🔥 Needed for manage sessions
         body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token);
+        // ✅ Stock only the role
         localStorage.setItem('role', data.role);
-        window.location.href = '/'; // Redirige après connexion
+        window.location.href = '/'; // Redirect after connection
       } else {
         setError(data.error || 'Erreur de connexion');
       }
