@@ -1,29 +1,19 @@
-# Use Node.js image to build the application
-FROM node:18 AS build
+# Pull the Node image from Docker Hub
+FROM node:18-slim
 
-# Set the working directory
-WORKDIR /app
+# Setting Working Directory
+WORKDIR /usr/app
 
-# Copy package.json and package-lock.json
+# Copying only package.json
 COPY package*.json ./
 
-# Install dependencies
+# Install Dependencies
 RUN npm install
 
-# Copy the rest of the application files
+# Copy rest of the code to container
 COPY . .
 
-# Build the application
-RUN npm run build
+EXPOSE 5173
 
-# Use Nginx to serve the application
-FROM nginx:alpine
-
-# Copy the build output to the Nginx HTML directory
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Run the React app
+CMD [ "npm", "run", "dev", "--host" ]

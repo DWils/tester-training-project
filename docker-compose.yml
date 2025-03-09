@@ -1,29 +1,50 @@
 version: '3.8'
-
 services:
-  backend:
-    build: ./training-test-project-api
-    ports:
-      - "8080:8080"
+  postgres:
+    image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/database
+    container_name: database
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/test_DB
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    depends_on:
-      - db
+      POSTGRES_USER: postgresprod
+      POSTGRES_PASSWORD: adminprod
+      POSTGRES_DB: databasenameprod
+    ports:
+      - 5433:5432
+    networks:
+      - myapplication
 
-  db:
-    image: postgres:latest
+  backend:
+    image: backend
+    container_name: backend
+    build: ./backend
     environment:
-      POSTGRES_DB: test_DB
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      DB_SERVER: database
     ports:
-      - "5432:5432"
+      - 8081:8080
+    networks:
+      - myapplication
+    depends_on:
+      - postgres
 
   frontend:
+    image: frontend
+    container_name: frontend
     build: ./frontend
+    environment:
+      VITE_BACKEND_SERVER: http://localhost:8081
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
+      - 5173:5173
+    networks:
+      - myapplication
+
+volumes:
+  postgres:
+    driver: local 
+    
+networks:
+    myapplication:
+      driver: bridge
+
+
+
