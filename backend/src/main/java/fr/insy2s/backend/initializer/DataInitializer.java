@@ -2,8 +2,10 @@ package fr.insy2s.backend.initializer;
 
 import fr.insy2s.backend.domain.Category;
 import fr.insy2s.backend.domain.Product;
+import fr.insy2s.backend.domain.User;
 import fr.insy2s.backend.repository.CategoryRepository;
 import fr.insy2s.backend.repository.ProductRepository;
+import fr.insy2s.backend.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +15,13 @@ public class DataInitializer implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
+    private final UserRepository userRepository;
 
-    public DataInitializer(CategoryRepository categoryRepository, ProductRepository productRepository) {
+
+    public DataInitializer(CategoryRepository categoryRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Add products if the table is empty
         if (productRepository.count() == 0) {
-            // Récupérer les catégories pour associer aux produits
+            // get categories for set products
             System.out.println("Adding products");
             Category informatique = categoryRepository.findByCategoryName("Informatique");
             Category electromenager = categoryRepository.findByCategoryName("Electroménager");
@@ -44,20 +49,20 @@ public class DataInitializer implements CommandLineRunner {
 
 
         // Add users if the table is empty
-        /*if (userRepository.count() == 0) {
+        if (userRepository.count() == 0) {
             System.out.println("Adding users");
 
-            userRepository.save(new User("admin1", passwordEncoder.encode("password"), "ADMIN"));
-            userRepository.save(new User("admin2", passwordEncoder.encode("password"), "ADMIN"));
-            userRepository.save(new User("admin3", passwordEncoder.encode("password"), "ADMIN"));
+            userRepository.save(new User("admin1", "admin1@email.com", "password", "ADMIN"));
+            userRepository.save(new User("admin2", "admin2@email.com", "password", "ADMIN"));
+            userRepository.save(new User("admin3", "admin3@email.com","password", "ADMIN"));
 
-            userRepository.save(new User("vendor1", passwordEncoder.encode("password"), "VENDOR"));
-            userRepository.save(new User("vendor2", passwordEncoder.encode("password"), "VENDOR"));
-            userRepository.save(new User("vendor3", passwordEncoder.encode("password"), "VENDOR"));
+            userRepository.save(new User("vendor1", "vendor1@email.com","password", "VENDOR"));
+            userRepository.save(new User("vendor2", "vendor2@email.com","password", "VENDOR"));
+            userRepository.save(new User("vendor3", "vendor3@email.com","password", "VENDOR"));
 
-            userRepository.save(new User("customer1", passwordEncoder.encode("password"), "CUSTOMER"));
-            userRepository.save(new User("customer2", passwordEncoder.encode("password"), "CUSTOMER"));
-            userRepository.save(new User("customer3", passwordEncoder.encode("password"), "CUSTOMER"));
-        }*/
+            userRepository.save(new User("customer1", "customer1@email.com","password", "CUSTOMER"));
+            userRepository.save(new User("customer2", "customer2@email.com","password", "CUSTOMER"));
+            userRepository.save(new User("customer3", "customer3@email.com","password", "CUSTOMER"));
+        }
     }
 }
