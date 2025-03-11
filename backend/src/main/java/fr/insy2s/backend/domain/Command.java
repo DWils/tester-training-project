@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Order {
+public class Command {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderLine> orderLines;
+    @OneToMany(mappedBy = "command", cascade = CascadeType.ALL)
+    private List<CommandLine> commandLines;
 
 }

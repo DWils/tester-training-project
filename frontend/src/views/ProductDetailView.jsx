@@ -1,31 +1,47 @@
-import React from 'react'
-import { useState } from 'react'
-const ProductDescriptionView = () => {
+import React from 'react';
+import {useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
+import apiBackend from "../api/apiBackend.js";
+import './ProductDetailView.css'; // Import the CSS file
 
-    const [product, setProduct] = useState([]);
+const ProductDetailView = () => {
+    const [product, setProduct] = useState(null);
+    const {id} = useParams();
 
+    useEffect(() => {
+        apiBackend.get(`/api/products/${id}`)
+            .then(response => {
+                setProduct(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching product:', error);
+            });
+    }, [id]);
+
+    if (!product) {
+        return <div>Loading...</div>;
+    }
 
     return (
-        {product.map(product => (
-            <div key={product.productId} className="col-md-4">
-                <div className="card shadow-sm mb-4">
-                    {product.productImageUrl && (
-                        <img
-                            src={product.productImageUrl}
-                            className="card-img-top"
-                            alt={product.productName}
-                            style={{height: "200px", objectFit: "cover"}}
-                        />
-                    )}
-                    <div className="card-body">
-                        <h5 className="card-title">{product.productName}</h5>
-                        <p className="card-text">{product.productDescription}</p>
-                        <p className="card-text fw-bold text-danger">
-                            💰 {product.productPrice.toFixed(2)} €
-                        </p>
-                    </div>
-                </div>
+        <div className="product-detail-container">
+            {product.productImageUrl && (
+                <img
+                    src={product.productImageUrl}
+                    className="card-img-top product-image"
+                    alt={product.productName}
+                />
             )}
-    )
-}
-export default ProductDescriptionView
+            <div className="card-body">
+                <h5 className="card-title">{product.productName}</h5>
+                <p className="card-text">{product.productDescription}</p>
+                {product.productPrice !== undefined && (
+                    <p className="card-text product-price">
+                        💰 {product.productPrice.toFixed(2)} €
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetailView;

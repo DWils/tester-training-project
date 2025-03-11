@@ -3,6 +3,8 @@ package fr.insy2s.backend.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -24,6 +26,9 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
+    @OneToMany(mappedBy = "user")
+    private List<Command> commands;
 
     public User() {
 

@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,6 +45,9 @@ public class Product {
 
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "product")
+    private List<CommandLine> commandLines;
 
     public Product(String productName, String productDescription, Double productPrice,  Category category, String imageUrl) {
         this.productName = productName;
