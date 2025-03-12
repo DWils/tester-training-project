@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import apiBackend from './api/apiBackend.js';
-import { UserContext } from './UserContext';
+import apiBackend from '../api/apiBackend.js';
+import { UserContext } from './UserContext.jsx';
 
 export const CartContext = createContext();
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import apiBackend from "../api/apiBackend.js";
 import Banner from "../assets/banner.png";
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from "../CartContext.jsx";
+import { CartContext } from "../context/CartContext.jsx";
 
 const HomeView = () => {
     const [products, setProducts] = useState([]);

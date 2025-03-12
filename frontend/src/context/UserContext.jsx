@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import apiBackend from './api/apiBackend.js';
+import apiBackend from '../api/apiBackend.js';
 
 export const UserContext = createContext();
 

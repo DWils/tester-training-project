@@ -1,18 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
 
 const UserListView = () => {
     const [users, setUsers] = useState([]);
-    const [editingUser, setEditingUser] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [usersPerPage] = useState(5);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        apiBackend.get("/api/users").then(response => {
+        apiBackend.get(`/api/users?page=${currentPage}&limit=${usersPerPage}`).then(response => {
             setUsers(response.data);
         });
-    }, []);
+    }, [currentPage, usersPerPage]);
 
-    const handleEdit = (user) => {
-        setEditingUser(user);
+    const handleEdit = (userId) => {
+        navigate(`/edit-user/${userId}`);
     };
 
     const handleDelete = (userId) => {
@@ -25,16 +28,11 @@ const UserListView = () => {
             });
     };
 
-    const handleSave = () => {
-        apiBackend.put(`/api/users/${editingUser.id}`, editingUser)
-            .then(() => {
-                setUsers(users.map(user => user.id === editingUser.id ? editingUser : user));
-                setEditingUser(null);
-            })
-            .catch(error => {
-                console.error('Error updating user:', error);
-            });
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
+
+    const totalPages = Math.ceil(users.length / usersPerPage);
 
     return (
         <div>
@@ -50,31 +48,30 @@ const UserListView = () => {
                 </tr>
                 </thead>
                 <tbody>
-
-                {users.map((user) => (<tr>
+                {users.map((user) => (
+                    <tr key={user.id}>
                         <td>{user.id}</td>
-                        <td>{editingUser && editingUser.id === user.id ? (
-                            <input
-                                type="text"
-                                value={editingUser.username}
-                                onChange={(e) => setEditingUser({...editingUser, username: e.target.value})}
-                            />
-                        ) : user.username}</td>
+                        <td>{user.username}</td>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
                         <td>
-                            {editingUser && editingUser.id === user.id ? (
-                                <button className="btn btn-success" onClick={handleSave}>Enregistrer</button>
-                            ) : (
-                                <button className="btn btn-primary" onClick={() => handleEdit(user)}>Modifier</button>
-                            )}
-                            <button className="btn btn-danger" onClick={() => handleDelete(user.id)}>Supprimer</button>
+                            <button className="btn btn-primary" onClick={() => handleEdit(user.id)}>Modifier</button>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
+            {[...Array(totalPages).keys()].map(number => (
+                <button
+                    key={number + 1}
+                    onClick={() => handlePageChange(number + 1)}
+                    className={`btn ${currentPage === number + 1 ? 'btn-primary' : 'btn-secondary'}`}
+                >
+                    {number + 1}
+                </button>
+            ))}
         </div>
-    )
-        ;
+    );
 };
 
 export default UserListView;
