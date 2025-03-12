@@ -2,6 +2,8 @@ package fr.insy2s.backend.controller;
 
 import fr.insy2s.backend.domain.User;
 import fr.insy2s.backend.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,9 @@ public class UserController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
+        Page<User> users = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
