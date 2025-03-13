@@ -1,10 +1,12 @@
-import React from 'react';
+import { useContext } from 'react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
+import { UserContext } from "../context/UserContext.jsx";
 
-const LoginView = ({ setUser }) => {
+const LoginView = () => {
     const navigate = useNavigate();
+    const { login } = useContext(UserContext); // Utilisation correcte de login
 
     const formik = useFormik({
         initialValues: {
@@ -15,11 +17,10 @@ const LoginView = ({ setUser }) => {
             apiBackend.post('/api/login', values)
                 .then(response => {
                     alert('Connexion réussie');
-                    console.log("session :" ,response.data);
+                    console.log("session :", response.data);
 
-                    setUser(response.data);
-                    localStorage.setItem('user', JSON.stringify(response.data));
-                    navigate('/'); // Navigate to the home page
+                    login(response.data); // Met à jour UserContext immédiatement
+                    navigate('/'); // Redirige vers la page d'accueil
                 })
                 .catch(error => {
                     console.error('Erreur lors de la connexion:', error);
@@ -61,3 +62,4 @@ const LoginView = ({ setUser }) => {
 };
 
 export default LoginView;
+

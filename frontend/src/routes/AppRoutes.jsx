@@ -9,8 +9,12 @@ import RegisterView from "../views/RegisterView.jsx";
 import LoginView from "../views/LoginView.jsx";
 import CartView from "../views/CartView.jsx";
 import EditUserView from "../views/EditUserView.jsx";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext.jsx";
 
-const AppRoutes = ({user, setUser}) => {
+const AppRoutes = () => {
+    const { user } = useContext(UserContext);
+
     return (
         <Routes>
             <Route path="/" element={<HomeView/>}/>
@@ -21,7 +25,7 @@ const AppRoutes = ({user, setUser}) => {
             <Route path="/add-product" element={user ? <AddProductView/> : <HomeView/>}/>
             <Route path="/users" element={<UserListView/>}/>
             <Route path="/register" element={<RegisterView/>}/>
-            <Route path="/login" element={<LoginView setUser={setUser}/>}/>
+            <Route path="/login" element={<LoginView />} />
             <Route path="/cart" element={<CartView/>}/>
             <Route path="/edit-user/:id" element={<EditUserView/>}/>
         </Routes>

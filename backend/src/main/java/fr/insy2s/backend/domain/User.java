@@ -27,9 +27,6 @@ public class User {
         this.role = role;
     }
 
-    @OneToMany(mappedBy = "user")
-    private List<Command> commands;
-
     public User() {
 
     }

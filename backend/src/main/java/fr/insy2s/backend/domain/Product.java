@@ -1,6 +1,5 @@
 package fr.insy2s.backend.domain;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +21,6 @@ public class Product {
     @Column(name="product_id")
     private Long productId;
 
-
     @NotNull
     @Column(name="product_name")
     private String productName;
@@ -38,18 +36,16 @@ public class Product {
     @Column(name = "product_description", columnDefinition = "TEXT")
     private String productDescription;
 
-
     @Column(name = "product_image_url")
     private String productImageUrl;
-
 
     @ManyToOne
     private Category category;
 
-    @OneToMany(mappedBy = "product")
-    private List<CommandLine> commandLines;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
 
-    public Product(String productName, String productDescription, Double productPrice,  Category category, String imageUrl) {
+    public Product(String productName, String productDescription, Double productPrice, Category category, String imageUrl) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.productPrice = productPrice;
@@ -58,8 +54,7 @@ public class Product {
         this.productImageUrl = imageUrl;
     }
 
-    public Product() {
-    }
+    public Product() {}
 
     @Override
     public String toString() {
@@ -73,6 +68,4 @@ public class Product {
                 ", productDescription='" + productDescription + '\'' +
                 '}';
     }
-
 }
-

@@ -1,8 +1,12 @@
 import React from 'react'
 import {Link} from 'react-router-dom';
 import NavItem from "./NavItem.jsx";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext.jsx";
 
-const Navbar = ({user, handleLogout}) => {
+const Navbar = () => {
+    const { user, handleLogout } = useContext(UserContext);
+
 
     const [links, setLinks] = React.useState([
         // {linkDirection: "/#home", linkName: "Accueil"},

@@ -8,19 +8,24 @@ const UserProvider = ({ children }) => {
         const savedUser = localStorage.getItem('user');
         return savedUser ? JSON.parse(savedUser) : null;
     });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!user) {
-            apiBackend.get('/api/current-user')
-                .then(response => {
-                    setUser(response.data);
-                    localStorage.setItem('user', JSON.stringify(response.data));
-                })
-                .catch(error => {
-                    console.error('Error fetching current user:', error);
-                });
-        }
-    }, [user]);
+        apiBackend.get('/api/current-user')
+            .then(response => {
+                setUser(response.data);
+                localStorage.setItem('user', JSON.stringify(response.data));
+            })
+            .catch(error => {
+                console.error('Error fetching current user:', error);
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    const login = (userData) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+    };
 
     const handleLogout = () => {
         apiBackend.post('/api/logout')
@@ -35,8 +40,8 @@ const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, setUser, handleLogout }}>
-            {children}
+        <UserContext.Provider value={{ user, setUser, handleLogout, login, loading }}>
+            {!loading ? children : <p>Loading...</p>}
         </UserContext.Provider>
     );
 };
