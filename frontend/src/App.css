@@ -1,14 +1,6 @@
 #root {
-    max-width: 1280px;
     margin: 0 auto;
     padding: 0;
-    text-align: center;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
-    }
 }
 
 .card {
@@ -40,4 +32,19 @@
 
 .card-title.click-to-detail:hover {
     color: orange;
+}
+
+.product-list-container {
+    height: 50vh;
+    width: 100vw;
+}
+
+.navbar-container {
+    width: 100vw;
+}
+
+.body-view{
+    padding: 20px 80px;
+    height: 80vh;
+    background-color: #eeeeee;
 }

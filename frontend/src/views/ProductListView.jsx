@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
+import useProductSearch from '../hooks/useProductSearch.js';
+import ProductSearch from '../components/ProductSearch.jsx';
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
+/**
+ * Product list view component.
+ * Displays a product search input and a table of filtered products.
+ */
 const ProductListView = () => {
     const [products, setProducts] = useState([]);
-    const [editingProduct, setEditingProduct] = useState(null);
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const category = queryParams.get('category');
+
+    const { filteredProducts, handleSearch } = useProductSearch();
 
     useEffect(() => {
-        apiBackend.get("/api/products").then(response => {
+        let url = "/api/products";
+        if (category) {
+            url += `?category=${category}`;
+        }
+        apiBackend.get(url).then(response => {
             setProducts(response.data);
         });
-    }, []);
-
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-    };
+    }, [category]);
 
     const handleDelete = (productId) => {
         apiBackend.delete(`/api/products/${productId}`)
@@ -37,8 +49,10 @@ const ProductListView = () => {
     };
 
     return (
-        <div>
+        <div className="body-view">
+            <Breadcrumb/>
             <h2>Liste des Produits</h2>
+            <ProductSearch onSearch={handleSearch} />
             <table className="table table-striped">
                 <thead>
                 <tr>
@@ -50,23 +64,14 @@ const ProductListView = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {products.map((product) => (
-                    <tr key={product.id}>
-                        <td>{product.id}</td>
-                        <td>{editingProduct && editingProduct.id === product.id ? (
-                            <input
-                                type="text"
-                                onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                            />
-                        ) : product.productName}</td>
+                {filteredProducts.map((product) => (
+                    <tr key={product.productId}>
+                        <td>{product.productId}</td>
+                        <td>{product.productName}</td>
                         <td>{product.productDescription}</td>
-                        <td>{product.price}</td>
+                        <td>{product.productPrice}</td>
                         <td>
-                            {editingProduct && editingProduct.id === product.id ? (
-                                <button className="btn btn-success" onClick={handleSave}>Enregistrer</button>
-                            ) : (
-                                <button className="btn btn-primary" onClick={() => handleEdit(product)}>Modifier</button>
-                            )}
+                            <button className="btn btn-primary">Modifier</button>
                             <button className="btn btn-danger" onClick={() => handleDelete(product.id)}>Supprimer</button>
                         </td>
                     </tr>

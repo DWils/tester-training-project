@@ -3,7 +3,12 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
 import { UserContext } from "../context/UserContext.jsx";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
+/**
+ * Login view component.
+ * Displays a login form and handles user authentication.
+ */
 const LoginView = () => {
     const navigate = useNavigate();
     const { login } = useContext(UserContext); // Utilisation correcte de login
@@ -30,7 +35,8 @@ const LoginView = () => {
     });
 
     return (
-        <div>
+        <div className="body-view" >
+            <Breadcrumb/>
             <h2>Connexion</h2>
             <form onSubmit={formik.handleSubmit}>
                 <div className="form-group">

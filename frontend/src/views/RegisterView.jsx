@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import apiBackend from "../api/apiBackend.js";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const RegisterView = () => {
     const formik = useFormik({
@@ -23,7 +24,8 @@ const RegisterView = () => {
     });
 
     return (
-        <div>
+        <div className="body-view">
+            <Breadcrumb/>
             <h2>Inscription</h2>
             <form onSubmit={formik.handleSubmit}>
                 <div className="form-group">

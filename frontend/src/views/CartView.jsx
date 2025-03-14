@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext.jsx';
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const CartView = () => {
     const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
@@ -11,6 +12,7 @@ const CartView = () => {
 
     return (
         <div className="container mt-4">
+            <Breadcrumb/>
             <h2>Shopping Cart</h2>
             {cart.length === 0 ? (
                 <p>Your cart is empty</p>

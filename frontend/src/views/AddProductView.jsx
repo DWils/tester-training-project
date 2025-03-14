@@ -1,7 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import apiBackend from "../api/apiBackend.js";
 import {useFormik} from 'formik';
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
+/**
+ * Add product view component.
+ * Displays a form to add a new product and handles form submission.
+ */
 const AddProductView = () => {
 
     const [categories, setCategories] = useState([]);
@@ -55,9 +60,10 @@ const AddProductView = () => {
     });
 
     return (
-        <div>
+        <div className="body-view">
+            <Breadcrumb/>
             <h2>Ajouter un Produit</h2>
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formik.handleSubmit} className="border-1 p-3">
                 <div className="form-group">
                     <label>Nom du produit</label>
                     <input

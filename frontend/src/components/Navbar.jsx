@@ -9,25 +9,22 @@ const Navbar = () => {
 
 
     const [links, setLinks] = React.useState([
-        // {linkDirection: "/#home", linkName: "Accueil"},
-        // {linkDirection: "/#products", linkName: "Liste des produits"},
-        // {linkDirection: "/add-product", linkName: "Ajouter Produit"},
         {linkDirection: "/products", linkName: "Liste des produits"},
-        {linkDirection: "/add-product", linkName: "Ajouter un produit"},
-        {linkDirection: "/users", linkName: "Liste des utilisateurs"},
-        // {linkDirection: "/cart", linkName: "Cart"},
-        // {linkDirection: "/register", linkName: "Inscription"},
-        // {linkDirection: "/login", linkName: "Connexion"},
+        {linkDirection: "/users", linkName: "Liste des utilisateurs"}
     ]);
 
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light px-4">
-            <Link className="navbar-brand" to="/#home">Accueil</Link>
+            <Link className="navbar-brand" to="/">Accueil</Link>
             <div className="collapse navbar-collapse">
                 <ul className="navbar-nav mr-auto">
-                    <NavItem linkDirection="/#products" linkName="Liste des produits"/>
-                    {user && user.role === 'CUSTOMER' && (
+
+                    {(user && user.role === 'CUSTOMER') || !user && (
+                        <NavItem linkDirection="/" linkName="Nos produits"/>
+                    )}
+
+                    {user && (
                         <NavItem linkDirection="/add-product" linkName="Ajouter Produit"/>
                     )}
                     {

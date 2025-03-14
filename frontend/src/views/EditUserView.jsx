@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const EditUserView = () => {
     const { id } = useParams();
@@ -35,6 +36,7 @@ const EditUserView = () => {
 
     return (
         <div>
+            <Breadcrumb />
             <h2>Edit User</h2>
             <form onSubmit={(e) => { e.preventDefault(); handleSave(user); }}>
                 <div className="form-group">

@@ -2,7 +2,8 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
-import './ProductDetailView.css'; // Import the CSS file
+import './ProductDetailView.css';
+import Breadcrumb from "../components/Breadcrumb.jsx"; // Import the CSS file
 
 const ProductDetailView = () => {
     const [product, setProduct] = useState(null);
@@ -23,7 +24,10 @@ const ProductDetailView = () => {
     }
 
     return (
+        <div className="body-view">
+            <Breadcrumb/>
         <div className="product-detail-container">
+
             {product.productImageUrl && (
                 <img
                     src={product.productImageUrl}
@@ -40,6 +44,7 @@ const ProductDetailView = () => {
                     </p>
                 )}
             </div>
+        </div>
         </div>
     );
 };

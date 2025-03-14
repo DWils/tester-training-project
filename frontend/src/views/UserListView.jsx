@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import apiBackend from "../api/apiBackend.js";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const UserListView = () => {
     const [users, setUsers] = useState([]);
@@ -36,7 +37,8 @@ const UserListView = () => {
     };
 
     return (
-        <div>
+        <div className="body-view">
+            <Breadcrumb/>
             <h2>Liste des Utilisateurs</h2>
             <table className="table table-striped">
                 <thead>
