@@ -12,8 +12,10 @@ function App() {
         <UserProvider>
             <CartProvider>
                 <Router>
-                    <Navbar/>
-                    <AppRoutes/>
+                    <div className="app">
+                        <Navbar/>
+                        <AppRoutes/>
+                    </div>
                 </Router>
             </CartProvider>
         </UserProvider>

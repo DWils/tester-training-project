@@ -1,24 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import apiBackend from "../api/apiBackend.js";
-import {useFormik} from 'formik';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
-/**
- * Add product view component.
- * Displays a form to add a new product and handles form submission.
- */
 const AddProductView = () => {
-
     const [categories, setCategories] = useState([]);
-    const [product, setProduct] = useState({
-        productName: '',
-        productDescription: '',
-        productPrice: '',
-        productImageUrl: '',
-        category: {
-            categoryId: ''
-        },
-    });
 
     useEffect(() => {
         apiBackend.get("/api/categories")
@@ -30,6 +17,25 @@ const AddProductView = () => {
             });
     }, []);
 
+    const validationSchema = Yup.object({
+        name: Yup.string()
+            .min(3, 'Le nom du produit doit contenir au moins 3 caractères.')
+            .max(100, 'Le nom du produit est trop long (max. 100 caractères).')
+            .required('Le nom du produit est requis.'),
+        description: Yup.string()
+            .min(10, 'La description doit contenir au moins 10 caractères.')
+            .max(1000, 'La description ne peut pas dépasser 1000 caractères.')
+            .required('La description du produit est requise.'),
+        price: Yup.number()
+            .positive('Le prix doit être supérieur à 0.')
+            .required('Le prix est requis.'),
+        imageUrl: Yup.string()
+            .url('L\'URL de l\'image doit être valide.')
+            .required('L’image du produit est requise.'),
+        categoryId: Yup.string()
+            .required('Veuillez sélectionner une catégorie.')
+    });
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -38,6 +44,7 @@ const AddProductView = () => {
             imageUrl: '',
             categoryId: ''
         },
+        validationSchema: validationSchema,
         onSubmit: values => {
             const newProduct = {
                 productName: values.name,
@@ -61,7 +68,7 @@ const AddProductView = () => {
 
     return (
         <div className="body-view">
-            <Breadcrumb/>
+            <Breadcrumb />
             <h2>Ajouter un Produit</h2>
             <form onSubmit={formik.handleSubmit} className="border-1 p-3">
                 <div className="form-group">
@@ -72,8 +79,11 @@ const AddProductView = () => {
                         name="name"
                         value={formik.values.name}
                         onChange={formik.handleChange}
-                        required
+                        onBlur={formik.handleBlur}
                     />
+                    {formik.touched.name && formik.errors.name ? (
+                        <span style={{ color: 'red' }}>{formik.errors.name}</span>
+                    ) : null}
                 </div>
                 <div className="form-group">
                     <label>Description</label>
@@ -83,8 +93,11 @@ const AddProductView = () => {
                         name="description"
                         value={formik.values.description}
                         onChange={formik.handleChange}
-                        required
+                        onBlur={formik.handleBlur}
                     />
+                    {formik.touched.description && formik.errors.description ? (
+                        <span style={{ color: 'red' }}>{formik.errors.description}</span>
+                    ) : null}
                 </div>
                 <div className="form-group">
                     <label>Prix</label>
@@ -94,9 +107,11 @@ const AddProductView = () => {
                         name="price"
                         value={formik.values.price}
                         onChange={formik.handleChange}
-                        required
-                        min="0"
+                        onBlur={formik.handleBlur}
                     />
+                    {formik.touched.price && formik.errors.price ? (
+                        <span style={{ color: 'red' }}>{formik.errors.price}</span>
+                    ) : null}
                 </div>
                 <div className="form-group">
                     <label>URL de l'image</label>
@@ -106,8 +121,11 @@ const AddProductView = () => {
                         name="imageUrl"
                         value={formik.values.imageUrl}
                         onChange={formik.handleChange}
-                        required
+                        onBlur={formik.handleBlur}
                     />
+                    {formik.touched.imageUrl && formik.errors.imageUrl ? (
+                        <span style={{ color: 'red' }}>{formik.errors.imageUrl}</span>
+                    ) : null}
                 </div>
                 <div className="form-group">
                     <label>Catégorie</label>
@@ -116,7 +134,7 @@ const AddProductView = () => {
                         name="categoryId"
                         value={formik.values.categoryId}
                         onChange={formik.handleChange}
-                        required
+                        onBlur={formik.handleBlur}
                     >
                         <option value="">Sélectionner une catégorie</option>
                         {categories.map(category => (
@@ -125,13 +143,19 @@ const AddProductView = () => {
                             </option>
                         ))}
                     </select>
+                    {formik.touched.categoryId && formik.errors.categoryId ? (
+                        <span style={{ color: 'red' }}>{formik.errors.categoryId}</span>
+                    ) : null}
                 </div>
-                <button type="submit" className="btn btn-primary mt-3">
+                <button type="submit" className="btn btn-primary mt-3" disabled={!formik.isValid || formik.isSubmitting}>
                     Ajouter
                 </button>
+                {formik.errors && Object.keys(formik.errors).length > 0 && (
+                    <div style={{ color: 'red' }}>Veuillez corriger les erreurs avant de soumettre le formulaire.</div>
+                )}
             </form>
         </div>
     );
-
 }
-export default AddProductView
+
+export default AddProductView;
