@@ -3,7 +3,6 @@ package fr.insy2s.backend.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Getter
@@ -30,5 +29,11 @@ public class User {
     public User() {
 
     }
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<CustomerOrder> orders;
 
 }

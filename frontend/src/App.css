@@ -3,14 +3,6 @@
     padding: 0;
 }
 
-.app{
-    background-color: #eeeeee;
-}
-
-.card {
-    padding: 2em;
-}
-
 .read-the-docs {
     color: #888;
 }
@@ -51,3 +43,41 @@
     padding: 20px 80px;
     height: 80vh;
 }
+
+.card.mb-4 img{
+object-fit: contain;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+    border-radius: 50%;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* 🔥 Toutes les cartes auront la même hauteur */
+    padding: 2em;
+}
+
+.card-title {
+    height: 62px; /* 🔥 Ajuste la hauteur pour 2 lignes */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis; /* Ajoute "..." si coupé */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 🔥 Maximum 2 lignes */
+    -webkit-box-orient: vertical;
+    word-wrap: break-word; /* Permet aux mots longs de passer à la ligne */
+}
+
+
+.description {
+    height: 100px; /* 🔥 Fixe une hauteur maximale */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis; /* Ajoute "..." à la fin */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 🔥 Affiche au maximum 3 lignes */
+    -webkit-box-orient: vertical;
+}
+

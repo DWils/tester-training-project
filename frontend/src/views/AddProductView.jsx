@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import apiBackend from "../api/apiBackend.js";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -114,7 +114,7 @@ const AddProductView = () => {
                     ) : null}
                 </div>
                 <div className="form-group">
-                    <label>URL de l'image</label>
+                    <label>URL de l&apos;image</label>
                     <input
                         type="text"
                         className="form-control"

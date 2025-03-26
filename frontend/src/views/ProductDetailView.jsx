@@ -1,13 +1,16 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
 import './ProductDetailView.css';
-import Breadcrumb from "../components/Breadcrumb.jsx"; // Import the CSS file
+import Breadcrumb from "../components/Breadcrumb.jsx";
+import { CartContext } from "../context/CartContext.jsx"; // ✅ Import du contexte
 
 const ProductDetailView = () => {
     const [product, setProduct] = useState(null);
-    const {id} = useParams();
+    const [error, setError] = useState(false);
+    const { id } = useParams();
+    const { addToCart } = useContext(CartContext); // ✅ Récupérer la fonction d'ajout au panier
+    const navigate = useNavigate();
 
     useEffect(() => {
         apiBackend.get(`/api/products/${id}`)
@@ -15,36 +18,54 @@ const ProductDetailView = () => {
                 setProduct(response.data);
             })
             .catch(error => {
-                console.error('Error fetching product:', error);
+                console.error('❌ Erreur lors de la récupération du produit:', error);
+                setError(true);
             });
     }, [id]);
 
+    if (error) {
+        return (
+            <div className="body-view text-center">
+                <Breadcrumb />
+                <h2 className="text-danger">❌ Ce produit n'est plus disponible.</h2>
+                <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
+                    Retour à la boutique
+                </button>
+            </div>
+        );
+    }
+
     if (!product) {
-        return <div>Loading...</div>;
+        return <div className="body-view text-center">Loading...</div>;
     }
 
     return (
         <div className="body-view">
-            <Breadcrumb/>
-        <div className="product-detail-container">
-
-            {product.productImageUrl && (
-                <img
-                    src={product.productImageUrl}
-                    className="card-img-top product-image"
-                    alt={product.productName}
-                />
-            )}
-            <div className="card-body">
-                <h5 className="card-title">{product.productName}</h5>
-                <p className="card-text">{product.productDescription}</p>
-                {product.productPrice !== undefined && (
-                    <p className="card-text product-price">
-                        💰 {product.productPrice.toFixed(2)} €
-                    </p>
+            <Breadcrumb />
+            <div className="product-detail-container">
+                {product.imageUrl && (
+                    <img
+                        src={product.imageUrl}
+                        className="card-img-top product-image"
+                        alt={product.title}
+                    />
                 )}
+                <div className="card-body">
+                    <h5 className="card-title">{product.title}</h5>
+                    <p className="card-text">{product.description}</p>
+                    {product.quantity !== undefined && (
+                        <p className="card-text">📦 Stock disponible : {product.quantity}</p>
+                    )}
+                    {product.productPrice !== undefined && (
+                        <p className="card-text product-price">
+                            💰 {product.price.toFixed(2)} €
+                        </p>
+                    )}
+                    <button className="btn btn-success mt-3" onClick={() => addToCart(product)}>
+                        🛒 Ajouter au panier
+                    </button>
+                </div>
             </div>
-        </div>
         </div>
     );
 };

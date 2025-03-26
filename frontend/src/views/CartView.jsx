@@ -3,7 +3,7 @@ import { CartContext } from '../context/CartContext.jsx';
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const CartView = () => {
-    const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
+    const { cart, addToCart, removeFromCart, clearCart, proceedToOrder } = useContext(CartContext);
 
     // Correction pour éviter une erreur si productPrice ou quantity est undefined
     const totalPrice = cart.reduce((total, product) => {
@@ -21,10 +21,10 @@ const CartView = () => {
                     <ul>
                         {cart.map((product) => (
                             <li key={product.productId} className="d-flex align-items-center mb-3">
-                                <img src={product.productImage} alt={product.productName} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
+                                <img src={product.imageUrl} alt={product.title} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
                                 <div className="flex-grow-1">
-                                    <h5>{product.productName}</h5>
-                                    <p>{(product.productPrice || 0).toFixed(2)} €</p>
+                                    <h5>{product.title}</h5>
+                                    <p>{(product.price || 0).toFixed(2)} €</p>
                                     <div className="d-flex align-items-center">
                                         <button onClick={() => addToCart(product)} className="btn btn-primary btn-sm mr-2">+</button>
                                         <span>{product.quantity || 0}</span>
@@ -37,6 +37,9 @@ const CartView = () => {
                     </ul>
                     <h3>Total: {totalPrice.toFixed(2)} €</h3>
                     <button onClick={clearCart} className="btn btn-warning">Clear Cart</button>
+                    <button onClick={proceedToOrder} className="btn btn-primary">
+                                    Confirmer la commande
+                                </button>
                 </div>
             )}
         </div>

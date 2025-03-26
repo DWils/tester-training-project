@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username).get();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User authenticateUserByEmail(LoginRequest loginRequest) {
-        User user = userRepository.findByEmail(loginRequest.getEmail());
+        User user = userRepository.findByEmail(loginRequest.getEmail()).get();
         if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
             return user;
         }

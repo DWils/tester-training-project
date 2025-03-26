@@ -1,6 +1,8 @@
 package fr.insy2s.backend.controller;
 
+import fr.insy2s.backend.domain.Category;
 import fr.insy2s.backend.domain.Product;
+import fr.insy2s.backend.service.FakeStoreService;
 import fr.insy2s.backend.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+    private final FakeStoreService fakeStoreService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, FakeStoreService fakeStoreService) {
         this.productService = productService;
+        this.fakeStoreService = fakeStoreService;
     }
 
     /**
@@ -31,8 +35,10 @@ public class ProductController {
      * Récupérer la liste de tous les produits
      */
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) Long categoryId) {
+        List<Product> products = (categoryId != null)
+                ? productService.getProductsByCategory(categoryId)
+                : productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
@@ -41,7 +47,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Optional<Product> product = Optional.ofNullable(productService.getProduct(id));
+        Optional<Product> product = productService.getProductById(id);
         return product.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -77,11 +83,18 @@ public class ProductController {
     //@PreAuthorize("hasRole('VENDOR') or hasRole('ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         try {
-            product.setProductId(id);
+            product.setId(id);
             Product updatedProduct = productService.updateProduct(product);
             return ResponseEntity.ok(updatedProduct);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping("/import-fakestore")
+    public ResponseEntity<String> importFakeProducts() {
+        fakeStoreService.fetchAndSaveFakeProducts();
+        return ResponseEntity.ok("Produits FakeStoreAPI importés avec succès !");
+    }
+
 }

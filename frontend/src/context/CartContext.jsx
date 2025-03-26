@@ -1,12 +1,16 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { toast } from "react-toastify";
 import apiBackend from '../api/apiBackend.js';
 import { UserContext } from './UserContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const CartContext = createContext();
 
+// eslint-disable-next-line react/prop-types
 const CartProvider = ({ children }) => {
     const { user, loading } = useContext(UserContext);
     const [cart, setCart] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("UserContext state:", { user, loading });
@@ -47,36 +51,38 @@ const CartProvider = ({ children }) => {
             return;
         }
         setCart(prevCart => {
-            const existingProduct = prevCart.find(item => item.productId === product.productId || item.productId === product.id);
+            const existingProduct = prevCart.find(item => item.id === product.id);
             let updatedCart;
             if (existingProduct) {
                 updatedCart = prevCart.map(item =>
-                    item.productId === product.productId || item.productId === product.id
+                    item.id === product.id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             } else {
-                updatedCart = [...prevCart, { ...product, productId: product.productId, quantity: 1 }];
+                updatedCart = [...prevCart, { ...product, id: product.id, quantity: 1 }];
             }
             saveCartToBackend(updatedCart);
             return updatedCart;
         });
+        toast.success(` 🛒 ${product.title} ajouté au panier !`);
     };
 
     const removeFromCart = (productId, removeAll = false) => {
         if (loading) return;
         setCart(prevCart => {
-            const existingProduct = prevCart.find(item => item.productId === productId);
+            const existingProduct = prevCart.find(item => item.id === productId);
             let updatedCart;
             if (existingProduct) {
                 if (removeAll || existingProduct.quantity === 1) {
-                    updatedCart = prevCart.filter(item => item.productId !== productId);
+                    updatedCart = prevCart.filter(item => item.id !== productId);
                 } else {
                     updatedCart = prevCart.map(item =>
                         item.productId === productId ? { ...item, quantity: item.quantity - 1 } : item
                     );
                 }
                 saveCartToBackend(updatedCart);
+                toast.error(`❌ Produit supprimé du panier !`);
                 return updatedCart;
             }
             return prevCart;
@@ -89,8 +95,19 @@ const CartProvider = ({ children }) => {
         saveCartToBackend([]);
     };
 
+    const proceedToOrder = () => {
+        if (loading) return;
+        if (!user) {
+            alert('You must be logged in to proceed to the order.');
+            return;
+        }
+        const userId = user ? user.id : null;
+        apiBackend.post(`/cart/confirm?userId=${userId}`)
+        navigate('/order');
+    };
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, proceedToOrder }}>
             {children}
         </CartContext.Provider>
     );

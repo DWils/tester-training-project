@@ -1,71 +1,52 @@
 package fr.insy2s.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
-import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_id")
-    private Long productId;
+    private Long id;
 
-    @NotNull
-    @Column(name="product_name")
-    private String productName;
+    @Column(nullable = false)
+    private String title;
 
-    @Column(name="product_price")
-    private Double productPrice;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name="creation_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date creationDate;
+    @Column(nullable = false)
+    private Double price;
 
-    @Column(name = "product_description", columnDefinition = "TEXT")
-    private String productDescription;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @Column(name = "product_image_url")
-    private String productImageUrl;
+    @Column(nullable = false)
+    private Integer quantity = 10;  // Valeur par défaut
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonBackReference
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private ProductRating rating;
 
-    public Product(String productName, String productDescription, Double productPrice, Category category, String imageUrl) {
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.productPrice = productPrice;
-        this.creationDate = new Date();
+    public Product(String title, String description, Double price, String imageUrl, int quantity, Category category) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.quantity = quantity;
         this.category = category;
-        this.productImageUrl = imageUrl;
-    }
-
-    public Product() {}
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productId=" + productId +
-                ", productName='" + productName + '\'' +
-                ", productPrice=" + productPrice +
-                ", creationDate=" + creationDate +
-                ", categoryId=" + (category != null ? category.getCategoryId() : "null") +
-                ", productImageUrl='" + productImageUrl + '\'' +
-                ", productDescription='" + productDescription + '\'' +
-                '}';
     }
 }

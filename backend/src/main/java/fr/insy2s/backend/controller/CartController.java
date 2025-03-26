@@ -2,6 +2,7 @@ package fr.insy2s.backend.controller;
 
 import fr.insy2s.backend.domain.Cart;
 import fr.insy2s.backend.domain.CartItem;
+import fr.insy2s.backend.domain.CustomerOrder;
 import fr.insy2s.backend.service.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<Cart> saveCart(@RequestBody Cart cart) {
-        Cart existingCart = cartService.getCartByUserId(cart.getUserId());
+        Cart existingCart = cartService.getCartByUserId(cart.getUser().getId());
 
         if (existingCart.getItems() == null) {
             existingCart.setItems(new ArrayList<>());
@@ -57,5 +58,11 @@ public class CartController {
     public ResponseEntity<List<CartItem>> saveCartItems(@RequestBody List<CartItem> cartItems) {
         List<CartItem> savedCartItems = cartService.saveCartItems(cartItems);
         return ResponseEntity.ok(savedCartItems);
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<CustomerOrder> confirmCart(@RequestParam Long userId) {
+        CustomerOrder order = cartService.confirmCart(userId);
+        return ResponseEntity.ok(order);
     }
 }

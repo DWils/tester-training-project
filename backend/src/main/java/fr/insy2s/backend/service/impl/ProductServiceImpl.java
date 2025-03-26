@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product saveProduct(Product p) {
         if(p.getCategory() != null){
-            Optional<Category> categoryOptional = categoryRepository.findById(p.getCategory().getCategoryId());
+            Optional<Category> categoryOptional = categoryRepository.findById(p.getCategory().getId());
             categoryOptional.ifPresent(p::setCategory);
         }
         return productRepository.save(p);
@@ -34,33 +34,30 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Product p) {
         // Vérifier si le produit existe avant la mise à jour
-        if (p.getProductId() == null || !productRepository.existsById(p.getProductId())) {
+        if (p.getId() == null || !productRepository.existsById(p.getId())) {
             throw new IllegalArgumentException("Le produit avec cet ID n'existe pas.");
         }
 
         // Si le produit existe, on met à jour tous les autres champs sauf l'ID
-        Product existingProduct = productRepository.findById(p.getProductId()).orElseThrow(() ->
+        Product existingProduct = productRepository.findById(p.getId()).orElseThrow(() ->
                 new IllegalArgumentException("Produit non trouvé avec cet ID"));
 
         // Modifier les attributs sauf l'ID
-        if (p.getProductName() != null) {
-            existingProduct.setProductName(p.getProductName());
+        if (p.getTitle() != null) {
+            existingProduct.setTitle(p.getTitle());
         }
-        if (p.getProductPrice() != null) {
-            existingProduct.setProductPrice(p.getProductPrice());
+        if (p.getPrice() != null) {
+            existingProduct.setPrice(p.getPrice());
         }
-        if (p.getCreationDate() != null) {
-            existingProduct.setCreationDate(p.getCreationDate());
-        }
-        if (p.getCategory().getCategoryId() != null) {
-            Category cat = categoryRepository.getById(p.getCategory().getCategoryId());
+        if (p.getCategory().getId() != null) {
+            Category cat = categoryRepository.getById(p.getCategory().getId());
             existingProduct.setCategory(cat);
         }
-        if (p.getProductImageUrl() != null) {
-            existingProduct.setProductImageUrl(p.getProductImageUrl());
+        if (p.getImageUrl() != null) {
+            existingProduct.setImageUrl(p.getImageUrl());
         }
-        if (p.getProductDescription() != null) {
-            existingProduct.setProductDescription(p.getProductDescription());
+        if (p.getDescription() != null) {
+            existingProduct.setDescription(p.getDescription());
         }
 
         // Save et return updated product
@@ -94,5 +91,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public List<Product> getProductsByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Catégorie introuvable"));
+        return productRepository.findByCategory(category);
+    }
+
+
+    @Override
+    public Optional<Product> getProductById(Long id) {
+        return productRepository.findById(id);
     }
 }

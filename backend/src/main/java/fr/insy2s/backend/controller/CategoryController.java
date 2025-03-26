@@ -20,4 +20,6 @@ public class CategoryController {
     public List<Category> getCategoryList() {
         return productService.getAllCategories();
     }
+
+
 }

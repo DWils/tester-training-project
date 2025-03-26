@@ -1,39 +1,27 @@
 package fr.insy2s.backend.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
 @Entity
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
-    private Long categoryId;
-    @Column(name = "category_name")
-    private String categoryName;
-    @Column(name = "category_description")
-    private String categoryDescription;
+    private Long id; // Remplace categoryId
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "category")
+    @Column(unique = true, nullable = false)
+    private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Product> products;
-
-    public Category(String name, String description) {
-        this.categoryName = name;
-        this.categoryDescription = description;
-    }
-
-    public Category() {
-    }
 }
-

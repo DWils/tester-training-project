@@ -1,25 +1,21 @@
-import React from 'react'
-import {Link} from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import NavItem from "./NavItem.jsx";
-import { useContext } from "react";
 import { UserContext } from "../context/UserContext.jsx";
+import { CartContext } from "../context/CartContext.jsx"; // 🔥 Importation du contexte du panier
 
 const Navbar = () => {
     const { user, handleLogout } = useContext(UserContext);
+    const { cart = [] } = useContext(CartContext); // 🔥 Ajout d'une valeur par défaut
 
-
-    const [links, setLinks] = React.useState([
-        {linkDirection: "/products", linkName: "Liste des produits"},
-        {linkDirection: "/users", linkName: "Liste des utilisateurs"}
-    ]);
-
+    // Calcul du nombre total d'articles dans le panier
+    const totalItems = cart.reduce((total, item) => total + (item.quantity || 1), 0); // 🔥 Évite aussi les erreurs si `quantity` est undefined
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light px-4">
             <Link className="navbar-brand" to="/">Accueil</Link>
             <div className="collapse navbar-collapse">
                 <ul className="navbar-nav mr-auto">
-
                     {(user && user.role === 'CUSTOMER') || !user && (
                         <NavItem linkDirection="/" linkName="Nos produits"/>
                     )}
@@ -27,13 +23,14 @@ const Navbar = () => {
                     {user && (
                         <NavItem linkDirection="/add-product" linkName="Ajouter Produit"/>
                     )}
-                    {
-                        user && (user.role === 'VENDOR' || user.role === 'ADMIN') && links.map((link, index) =>
-                        <NavItem key={index} linkDirection={link.linkDirection} linkName={link.linkName}/>)
-                    }
+
                     <li className="nav-item">
-                        <Link className="nav-link" to="/cart">Cart</Link>
+                        <Link className="nav-link btn btn-warning" to="/cart">
+                            🛒 Panier
+                            {totalItems > 0 && <span className="badge bg-danger ms-2">{totalItems}</span>} {/* 🔥 Affichage du compteur */}
+                        </Link>
                     </li>
+
                     {!user && (
                         <NavItem linkDirection="/register" linkName="Inscription"/>
                     )}
@@ -56,6 +53,7 @@ const Navbar = () => {
                 </ul>
             </div>
         </nav>
-    )
+    );
 }
+
 export default Navbar;
