@@ -2,6 +2,7 @@ package fr.insy2s.backend.service.impl;
 
 import fr.insy2s.backend.domain.Category;
 import fr.insy2s.backend.domain.Product;
+import fr.insy2s.backend.dto.ProductDTO;
 import fr.insy2s.backend.repository.CategoryRepository;
 import fr.insy2s.backend.repository.ProductRepository;
 import fr.insy2s.backend.service.ProductService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -53,8 +55,8 @@ public class ProductServiceImpl implements ProductService {
             Category cat = categoryRepository.getById(p.getCategory().getId());
             existingProduct.setCategory(cat);
         }
-        if (p.getImageUrl() != null) {
-            existingProduct.setImageUrl(p.getImageUrl());
+        if (p.getImage() != null) {
+            existingProduct.setImage(p.getImage());
         }
         if (p.getDescription() != null) {
             existingProduct.setDescription(p.getDescription());
@@ -84,8 +86,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -94,15 +99,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Catégorie introuvable"));
-        return productRepository.findByCategory(category);
+    public List<ProductDTO> getProductsByCategory(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 
+
+    public Optional<ProductDTO> getProductById(Long id) {
+        return productRepository.findById(id).map(ProductDTO::new);
+    }
 
     @Override
-    public Optional<Product> getProductById(Long id) {
-        return productRepository.findById(id);
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Catégorie introuvable"));
     }
+
+    @Override
+    public Category getCategoryByProductId(Long id) {
+        return categoryRepository.findByProductId(id)
+                .orElseThrow(() -> new RuntimeException("Catégorie introuvable"));
+    }
+
+
 }

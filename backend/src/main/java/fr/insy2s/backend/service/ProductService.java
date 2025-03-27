@@ -2,6 +2,7 @@ package fr.insy2s.backend.service;
 
 import fr.insy2s.backend.domain.Category;
 import fr.insy2s.backend.domain.Product;
+import fr.insy2s.backend.dto.ProductDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +14,15 @@ public interface ProductService {
     void deleteProduct(Product p);
     void deleteProductById(Long id);
     Product getProduct(Long id);
-    List<Product> getAllProducts();
+    List<ProductDTO> getAllProducts();
 
     List<Category> getAllCategories();
 
-    List<Product> getProductsByCategory(Long categoryId);
+    List<ProductDTO> getProductsByCategory(Long categoryId);
 
-    Optional<Product> getProductById(Long id);
+    Optional<ProductDTO> getProductById(Long id);
+
+    Category getCategoryById(Long id);
+
+    Category getCategoryByProductId(Long id);
 }

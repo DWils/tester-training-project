@@ -22,7 +22,7 @@ const OrderView = () => {
             {console.log("orders : ", cart)}
             {cart.map((product) => (
                 <div key={product.id} className="d-flex align-items-center mb-3">
-                    <img src={product.imageUrl} alt={product.title} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
+                    <img src={product.image} alt={product.title} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
                     <div className="flex-grow-1">
                         <h5>{product.title}</h5>
                         <p>{(product.price || 0).toFixed(2)} €</p>

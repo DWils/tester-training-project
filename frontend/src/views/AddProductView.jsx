@@ -18,7 +18,7 @@ const AddProductView = () => {
     }, []);
 
     const validationSchema = Yup.object({
-        name: Yup.string()
+        title: Yup.string()
             .min(3, 'Le nom du produit doit contenir au moins 3 caractères.')
             .max(100, 'Le nom du produit est trop long (max. 100 caractères).')
             .required('Le nom du produit est requis.'),
@@ -29,7 +29,7 @@ const AddProductView = () => {
         price: Yup.number()
             .positive('Le prix doit être supérieur à 0.')
             .required('Le prix est requis.'),
-        imageUrl: Yup.string()
+        image: Yup.string()
             .url('L\'URL de l\'image doit être valide.')
             .required('L’image du produit est requise.'),
         categoryId: Yup.string()
@@ -38,21 +38,21 @@ const AddProductView = () => {
 
     const formik = useFormik({
         initialValues: {
-            name: '',
+            title: '',
             description: '',
             price: '',
-            imageUrl: '',
+            image: '',
             categoryId: ''
         },
         validationSchema: validationSchema,
         onSubmit: values => {
             const newProduct = {
-                productName: values.name,
-                productDescription: values.description,
-                productPrice: parseFloat(values.price),
+                title: values.title,
+                description: values.description,
+                price: parseFloat(values.price),
                 creationDate: new Date().toISOString().split('T')[0],
-                category: { categoryId: values.categoryId },
-                productImageUrl: values.imageUrl
+                category: { id: values.categoryId },
+                image: values.image
             };
 
             apiBackend.post('/api/products', newProduct)
@@ -76,13 +76,13 @@ const AddProductView = () => {
                     <input
                         type="text"
                         className="form-control"
-                        name="name"
-                        value={formik.values.name}
+                        name="title"
+                        value={formik.values.title}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.name && formik.errors.name ? (
-                        <span style={{ color: 'red' }}>{formik.errors.name}</span>
+                    {formik.touched.title && formik.errors.title ? (
+                        <span style={{ color: 'red' }}>{formik.errors.title}</span>
                     ) : null}
                 </div>
                 <div className="form-group">
@@ -118,13 +118,13 @@ const AddProductView = () => {
                     <input
                         type="text"
                         className="form-control"
-                        name="imageUrl"
-                        value={formik.values.imageUrl}
+                        name="image"
+                        value={formik.values.image}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.imageUrl && formik.errors.imageUrl ? (
-                        <span style={{ color: 'red' }}>{formik.errors.imageUrl}</span>
+                    {formik.touched.image && formik.errors.image ? (
+                        <span style={{ color: 'red' }}>{formik.errors.image}</span>
                     ) : null}
                 </div>
                 <div className="form-group">
@@ -138,8 +138,8 @@ const AddProductView = () => {
                     >
                         <option value="">Sélectionner une catégorie</option>
                         {categories.map(category => (
-                            <option key={category.categoryId} value={category.categoryId}>
-                                {category.categoryName}
+                            <option key={category.id} value={category.id}>
+                                {category.name}
                             </option>
                         ))}
                     </select>

@@ -74,27 +74,29 @@ const HomeView = () => {
                         displayedProducts.map((product) => (
                             <div key={product.id} className="col-md-4">
                                 <div className="card shadow-sm mb-4">
-                                    {product.imageUrl && (
+                                    {product.image && (
                                         <img
-                                            src={product.imageUrl}
+                                            src={product.image}
                                             className="card-img-top"
                                             alt={product.title}
-                                             style={{
-                                                    width: "100%",        // Prend toute la largeur du conteneur
-                                                    height: "200px",      // Hauteur fixe pour uniformiser les cartes
-                                                    objectFit: "contain", // Affiche toute l'image sans la couper
-                                                    backgroundColor: "#f8f9fa" // Ajoute un fond si l’image ne remplit pas la hauteur
-                                                }}
+                                            style={{
+                                                width: "100%",        // Prend toute la largeur du conteneur
+                                                height: "200px",      // Hauteur fixe pour uniformiser les cartes
+                                                objectFit: "contain", // Affiche toute l'image sans la couper
+                                                backgroundColor: "#f8f9fa" // Ajoute un fond si l’image ne remplit pas la hauteur
+                                            }}
                                             onClick={() => navigate("/products/" + product.id)}
                                         />
                                     )}
                                     <div className="card-body">
                                         <h5 className="card-title click-to-detail"
                                             onClick={() => navigate("/products/" + product.id)}>{product.title}</h5>
+                                       
+                                        <p className="card-text">🏷️ {product.category}</p>
                                         <p className="card-text description">{product.description}</p>
                                         {product.quantity !== undefined && (
-                                                                <p className="card-text">📦 Stock disponible : {product.quantity}</p>
-                                     )}
+                                            <p className="card-text">📦 Stock disponible : {product.quantity}</p>
+                                        )}
                                         <p className="card-text fw-bold text-danger">
                                             💰 {product.price.toFixed(2)} €
                                         </p>

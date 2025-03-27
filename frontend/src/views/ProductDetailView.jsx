@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
 import './ProductDetailView.css';
@@ -43,9 +43,9 @@ const ProductDetailView = () => {
         <div className="body-view">
             <Breadcrumb />
             <div className="product-detail-container">
-                {product.imageUrl && (
+                {product.image && (
                     <img
-                        src={product.imageUrl}
+                        src={product.image}
                         className="card-img-top product-image"
                         alt={product.title}
                     />

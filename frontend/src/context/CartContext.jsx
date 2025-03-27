@@ -68,21 +68,21 @@ const CartProvider = ({ children }) => {
         toast.success(` 🛒 ${product.title} ajouté au panier !`);
     };
 
-    const removeFromCart = (productId, removeAll = false) => {
+    const removeFromCart = (product, removeAll = false) => {
         if (loading) return;
         setCart(prevCart => {
-            const existingProduct = prevCart.find(item => item.id === productId);
+            const existingProduct = prevCart.find(item => item.id === product.id);
             let updatedCart;
             if (existingProduct) {
                 if (removeAll || existingProduct.quantity === 1) {
-                    updatedCart = prevCart.filter(item => item.id !== productId);
+                    updatedCart = prevCart.filter(item => item.id !== product.id);
                 } else {
                     updatedCart = prevCart.map(item =>
-                        item.productId === productId ? { ...item, quantity: item.quantity - 1 } : item
+                        item.id === product.id ? { ...item, quantity: item.quantity - 1 } : item
                     );
                 }
+                toast.error(`❌ ${product.title} supprimé du panier !`);
                 saveCartToBackend(updatedCart);
-                toast.error(`❌ Produit supprimé du panier !`);
                 return updatedCart;
             }
             return prevCart;
@@ -93,12 +93,13 @@ const CartProvider = ({ children }) => {
         if (loading) return;
         setCart([]);
         saveCartToBackend([]);
+        toast.error(`❌ Tous les articles ont été supprimés du panier !`);
     };
 
     const proceedToOrder = () => {
         if (loading) return;
         if (!user) {
-            alert('You must be logged in to proceed to the order.');
+            alert('Vous devez être connecté pour effectuer à la commande.');
             return;
         }
         const userId = user ? user.id : null;

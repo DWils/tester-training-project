@@ -2,6 +2,7 @@ package fr.insy2s.backend.controller;
 
 import fr.insy2s.backend.domain.Category;
 import fr.insy2s.backend.domain.Product;
+import fr.insy2s.backend.dto.ProductDTO;
 import fr.insy2s.backend.service.FakeStoreService;
 import fr.insy2s.backend.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,8 @@ public class ProductController {
      * Récupérer la liste de tous les produits
      */
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) Long categoryId) {
-        List<Product> products = (categoryId != null)
+    public ResponseEntity<List<ProductDTO>> getProducts(@RequestParam(required = false) Long categoryId) {
+        List<ProductDTO> products = (categoryId != null)
                 ? productService.getProductsByCategory(categoryId)
                 : productService.getAllProducts();
         return ResponseEntity.ok(products);
@@ -46,8 +47,8 @@ public class ProductController {
      * Récupérer un produit par ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Optional<Product> product = productService.getProductById(id);
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+        Optional<ProductDTO> product = productService.getProductById(id);
         return product.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

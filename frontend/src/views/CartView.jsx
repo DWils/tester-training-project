@@ -5,33 +5,32 @@ import Breadcrumb from "../components/Breadcrumb.jsx";
 const CartView = () => {
     const { cart, addToCart, removeFromCart, clearCart, proceedToOrder } = useContext(CartContext);
 
-    // Correction pour éviter une erreur si productPrice ou quantity est undefined
     const totalPrice = cart.reduce((total, product) => {
-        return total + ((product.productPrice || 0) * (product.quantity || 0));
+        return total + ((product.price || 0) * (product.quantity || 0));
     }, 0);
 
     return (
         <div className="container mt-4">
             <Breadcrumb/>
-            <h2>Shopping Cart</h2>
+            <h2>Panier</h2>
             {cart.length === 0 ? (
-                <p>Your cart is empty</p>
+                <p>Votre panier est vide</p>
             ) : (
                 <div>
                     <ul>
                         {cart.map((product) => (
-                            <li key={product.productId} className="d-flex align-items-center mb-3">
-                                <img src={product.imageUrl} alt={product.title} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
+                            <li key={product.id} className="d-flex align-items-center mb-3">
+                                <img src={product.image} alt={product.title} className="img-thumbnail mr-3" style={{ width: '50px', height: '50px' }} />
                                 <div className="flex-grow-1">
                                     <h5>{product.title}</h5>
                                     <p>{(product.price || 0).toFixed(2)} €</p>
                                     <div className="d-flex align-items-center">
-                                        <button onClick={() => addToCart(product)} className="btn btn-primary btn-sm mr-2">+</button>
+                                        <button onClick={() => removeFromCart(product)} className="btn btn-primary btn-sm ml-2">-</button>
                                         <span>{product.quantity || 0}</span>
-                                        <button onClick={() => removeFromCart(product.productId)} className="btn btn-primary btn-sm ml-2">-</button>
+                                        <button onClick={() => addToCart(product)} className="btn btn-primary btn-sm mr-2">+</button>
                                     </div>
                                 </div>
-                                <button onClick={() => removeFromCart(product.productId, true)} className="btn btn-danger btn-sm ml-3">Remove</button>
+                                <button onClick={() => removeFromCart(product, true)} className="btn btn-danger btn-sm ml-3">Remove</button>
                             </li>
                         ))}
                     </ul>

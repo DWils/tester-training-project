@@ -27,7 +27,7 @@ public class Product {
     private Double price;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image;
 
     @Column(nullable = false)
     private Integer quantity = 10;  // Valeur par défaut
@@ -41,11 +41,11 @@ public class Product {
     @JsonManagedReference
     private ProductRating rating;
 
-    public Product(String title, String description, Double price, String imageUrl, int quantity, Category category) {
+    public Product(String title, String description, Double price, String image, int quantity, Category category) {
         this.title = title;
         this.description = description;
         this.price = price;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.quantity = quantity;
         this.category = category;
     }
