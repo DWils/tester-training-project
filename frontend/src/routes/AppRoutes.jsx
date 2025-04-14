@@ -1,4 +1,3 @@
-import React from 'react'
 import {Route, Routes} from 'react-router-dom';
 import HomeView from "../views/HomeView.jsx";
 import ProductListView from "../views/ProductListView.jsx";
@@ -19,7 +18,8 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route path="/" element={<HomeView/>}/>
-            <Route path="/products"
+            <Route path="/products" element={<HomeView/>}/>
+            <Route path="/products-list"
                    element={(user && user.role === 'CUSTOMER') || !user ? <HomeView/> :
                        <ProductListView/>}/>
             <Route path="/products/:id" element={<ProductDetailView/>}/>

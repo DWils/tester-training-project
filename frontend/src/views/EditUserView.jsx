@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiBackend from "../api/apiBackend.js";
 import Breadcrumb from "../components/Breadcrumb.jsx";
@@ -17,6 +17,8 @@ const EditUserView = () => {
     }, [id]);
 
     const handleSave = (updatedUser) => {
+        console.log('Updated User:', updatedUser); // Log the updated user object
+        // Call the API to update the user  
         apiBackend.put(`/api/users/${updatedUser.id}`, updatedUser)
             .then(() => {
                 navigate('/users');

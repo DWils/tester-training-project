@@ -16,12 +16,17 @@ const Navbar = () => {
             <Link className="navbar-brand" to="/">Accueil</Link>
             <div className="collapse navbar-collapse">
                 <ul className="navbar-nav mr-auto">
-                    {(user && user.role === 'CUSTOMER') || !user && (
-                        <NavItem linkDirection="/" linkName="Nos produits"/>
-                    )}
+                    <NavItem linkDirection="/products" linkName="Nos produits" />
 
                     {user && (
-                        <NavItem linkDirection="/add-product" linkName="Ajouter Produit"/>
+                        <NavItem linkDirection="/add-product" linkName="Ajouter Produit" />
+                    )}
+
+                    {user && (user.role === 'ADMIN' || user.role === 'VENDOR') && (
+                        <>
+                            <NavItem linkDirection="/products-list" linkName="Gestion produits" />
+                            <NavItem linkDirection="/users" linkName="Gestion utilisateurs" />
+                        </>
                     )}
 
                     <li className="nav-item">
@@ -32,7 +37,7 @@ const Navbar = () => {
                     </li>
 
                     {!user && (
-                        <NavItem linkDirection="/register" linkName="Inscription"/>
+                        <NavItem linkDirection="/register" linkName="Inscription" />
                     )}
                 </ul>
                 <ul className="navbar-nav ml-auto">
@@ -43,12 +48,12 @@ const Navbar = () => {
                             </li>
                             <li className="nav-item">
                                 <button className="btn btn-link nav-link"
-                                        onClick={handleLogout}>Déconnexion
+                                    onClick={handleLogout}>Déconnexion
                                 </button>
                             </li>
                         </>
                     ) : (
-                        <NavItem linkDirection="/login" linkName="Connexion"/>
+                        <NavItem linkDirection="/login" linkName="Connexion" />
                     )}
                 </ul>
             </div>
